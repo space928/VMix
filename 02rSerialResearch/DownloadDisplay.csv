@@ -1,5 +1,0 @@
-#;Time;Function;Direction;Status;Data;Data (chars);Data length;Req. length;Port;Comments;
-6435366;05/05/2020 21:15:23;IRP_MJ_WRITE;DOWN;;03 ;".";1;1;COM3;;
-6435378;05/05/2020 21:15:23;IRP_MJ_WRITE;DOWN;;90 ;"ê";1;1;COM3;;
-6435387;05/05/2020 21:15:23;IRP_MJ_WRITE;DOWN;;00 ;".";1;1;COM3;;
-6435402;05/05/2020 21:15:23;IRP_MJ_WRITE;DOWN;;6f ;"o";1;1;COM3;;
