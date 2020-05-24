@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2041
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMix", "VMix\VMix.csproj", "{F6A56EA7-B577-4AB5-ACBE-0DCB673353EF}"
+EndProject
+Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F6A56EA7-B577-4AB5-ACBE-0DCB673353EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6A56EA7-B577-4AB5-ACBE-0DCB673353EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6A56EA7-B577-4AB5-ACBE-0DCB673353EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6A56EA7-B577-4AB5-ACBE-0DCB673353EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD1D258C-F9A9-4218-8459-630E627B3DB4}
+	EndGlobalSection
+EndGlobal

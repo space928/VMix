@@ -1,0 +1,47 @@
+﻿<UserControl x:Name="knobUserControl" x:Class="VMix.KnobControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:VMix"
+             xmlns:ViewModel="clr-namespace:VMix.ViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="50" d:DesignWidth="50">
+    <UserControl.Resources>
+        <ViewModel:KnobValueToAngleConverter x:Key="KnobValueToAngleConverter"/>
+        <ViewModel:KnobTitleConverter x:Key="KnobTitleConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="displayTextBlock" HorizontalAlignment="Center" TextAlignment="Center" IsHitTestVisible="False" Grid.Row="1" VerticalAlignment="Center" Style="{DynamicResource BodyText}" FontSize="{Binding LabelFontSize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}}">
+            <TextBlock.Text>
+                <MultiBinding Converter="{StaticResource KnobTitleConverter}">
+                    <Binding Path="Title" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}"/>
+                    <Binding Path="Value" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}"/>
+                    <Binding Path="Unit" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}"/>
+                    <Binding Path="DecimalPlaces" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}"/>
+                    <Binding Path="MetricTruncation" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}"/>
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+        <Viewbox Stretch="Uniform" Grid.RowSpan="1">
+            <Grid x:Name="knobGrid">
+                <Ellipse Fill="{DynamicResource ControlFill}" HorizontalAlignment="Center" Height="200" Stroke="{DynamicResource ControlBorder}" VerticalAlignment="Top" Width="200" Grid.RowSpan="2" MouseWheel="Ellipse_MouseWheel" MouseDown="Ellipse_MouseDown" MouseMove="Ellipse_MouseMove" MouseUp="Ellipse_MouseUp" MouseRightButtonDown="Ellipse_MouseRightButtonDown" />
+                <Rectangle x:Name="displayKnobNotch" Fill="{DynamicResource ControlAccent}" Height="94" Margin="0,6,0,100" Stroke="{DynamicResource ControlBorder}" Width="12" RenderTransformOrigin="0.5,1" HorizontalAlignment="Center" StrokeThickness="0" VerticalAlignment="Top">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="{Binding Value, Converter={StaticResource KnobValueToAngleConverter}, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}}"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <TextBox x:Name="KnobValueEntry" Margin="0" TextWrapping="Wrap" Text="ValueEntry" VerticalAlignment="Center" TextAlignment="Center" FontSize="36" Visibility="Hidden" KeyDown="KnobValueEntry_KeyDown" Background="{DynamicResource ControlFill}" BorderBrush="{DynamicResource ControlBorder}" Foreground="{DynamicResource Text}"/>
+            </Grid>
+        </Viewbox>
+    </Grid>
+</UserControl>

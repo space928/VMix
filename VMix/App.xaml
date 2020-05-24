@@ -1,0 +1,17 @@
+﻿<Application x:Class="VMix.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:VMix"
+             xmlns:vm="clr-namespace:VMix.ViewModel"
+             StartupUri="/View/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Themes/DarkTheme.xaml" />
+                <ResourceDictionary Source="/Themes/ControlTemplateOverrides.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <vm:ViewModel x:Key="VMLocator" xmlns:vm="clr-namespace:VMix.ViewModel"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

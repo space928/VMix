@@ -1,0 +1,262 @@
+﻿<Window x:Class="VMix.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VMix"
+        xmlns:vm="clr-namespace:VMix.ViewModel"
+        mc:Ignorable="d"
+        Title="VMix" Height="720" Width="1280" Background="{DynamicResource Background}" Icon="appicon_YXK_icon.ico" DataContext="{DynamicResource VMLocator}">
+    <Window.Resources>
+        <!--<CollectionViewSource x:Key="viewModelViewSource" d:DesignSource="{d:DesignInstance {x:Type vm:ViewModel}, CreateList=True}"/>
+        <CollectionViewSource x:Key="viewModelFadersViewSource" Source="{Binding Faders, Source={StaticResource viewModelViewSource}}"/>-->
+        <vm:IndexToNumberConverter x:Key="IndexToNumberConverter"/>
+        <vm:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
+        <vm:IndexConverter x:Key="IndexConverter"/>
+        <vm:BoolArrayIndexConverter x:Key="BoolArrayIndexConverter"/>
+        <vm:EQBandTypeConverter x:Key="EQBandTypeConverter"/>
+        <vm:DebugConverter x:Key="DebugConverter"/>
+    </Window.Resources>
+    <Grid Margin="0,0,0,-3">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <!--TITLE BAR-->
+        <Rectangle x:Name="TitleBar" Fill="{DynamicResource ControlAccent}" StrokeThickness="0.7"/>
+        <Button x:Name="FileButton" Content="FILE" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="75" Style="{DynamicResource InvisibleButton}" Height="26" Template="{DynamicResource InvisibleButtonControlTemplate}"/>
+        <Button x:Name="EditButton" Content="EDIT" HorizontalAlignment="Left" Margin="90,0,0,0" VerticalAlignment="Center" Width="75" Style="{DynamicResource InvisibleButton}" Height="26" Template="{DynamicResource InvisibleButtonControlTemplate}"/>
+        <Button x:Name="SettingsButton" Content="SETTINGS" HorizontalAlignment="Left" Margin="186,7,0,7" VerticalAlignment="Center" Width="93" Style="{DynamicResource InvisibleButton}" Height="26" Command="{Binding SettingsCommand}" Template="{DynamicResource InvisibleButtonControlTemplate}"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="VMix V0.0.1a" VerticalAlignment="Center" Style="{DynamicResource AppTitle}" Height="29" Width="127"/>
+
+        <!--SELECTED CHANNEL AND SCENE MANAGER-->
+        <Grid Margin="0" Grid.Row="1" Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="18*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="15*"/>
+            </Grid.RowDefinitions>
+
+            <Rectangle Fill="{DynamicResource Heading1Panel}" StrokeThickness="0.7"/>
+            <TextBlock TextWrapping="Wrap" Text="SELECTED CHANNEL" Style="{DynamicResource Heading1}" Margin="5,1,0,1" VerticalAlignment="Center"/>
+            <Rectangle Fill="{DynamicResource SelectedChannelPanel}" Grid.Row="1" StrokeThickness="0.7"/>
+            <Grid Margin="0" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="4*"/>
+                </Grid.ColumnDefinitions>
+                <Border BorderBrush="{DynamicResource Heading1Panel}" BorderThickness="1" HorizontalAlignment="Right" Margin="0"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="10*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="ROUTING" VerticalAlignment="Top" Style="{DynamicResource Heading2}"/>
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding SelectedChannel.Routing}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="2" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <local:MultieditToggleButton Content="{Binding BusIndex.Value, Converter={StaticResource IndexToNumberConverter}}" Margin="4" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" Style="{DynamicResource StandardToggleButton}" IsChecked="{Binding On.Value}" MultipleData="{Binding On.MultipleValues}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+                <Border BorderBrush="{DynamicResource Heading1Panel}" BorderThickness="1" HorizontalAlignment="Right" Margin="0" Grid.Column="1"/>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="10*"/>
+                        <!--<RowDefinition Height="2*"/>-->
+                    </Grid.RowDefinitions>
+                    <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="AUX SENDS" VerticalAlignment="Top" Style="{DynamicResource Heading2}"/>
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding SelectedChannel.SendLevels}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,2,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <local:KnobControl LabelFontSize="12" Unit="dB" MetricTruncation="True" Value="{Binding Level.Value, Mode=TwoWay}" Minimum="{Binding Level.Min}" Maximum="{Binding Level.Max}" DecimalPlaces="1" Title="{Binding TargetIndex.Value, Converter={StaticResource IndexToNumberConverter}}"/>
+                                    <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="{Binding On.MultipleValues}" IsChecked="{Binding On.Value}" Content="On" Grid.Column="1"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Grid>
+
+            <Rectangle Fill="{DynamicResource Heading1Panel}" StrokeThickness="0.7" Grid.Column="4" Margin="0"/>
+            <TextBlock TextWrapping="Wrap" Text="SCENE MANAGER" Style="{DynamicResource Heading1}" Margin="5,1,0,1" VerticalAlignment="Center" Grid.Column="4"/>
+            <Rectangle Grid.Column="4" Fill="{DynamicResource SceneManagerPanel}" Grid.Row="1" StrokeThickness="0.7"/>
+            <Grid Margin="0" Grid.Row="1" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+
+            <Rectangle Fill="{DynamicResource Heading1Panel}" StrokeThickness="0.7" Grid.Column="2" Margin="0"/>
+            <TextBlock TextWrapping="Wrap" Text="CONSOLE" Style="{DynamicResource Heading1}" Margin="5,1,0,1" VerticalAlignment="Center" Grid.Column="2"/>
+            <Rectangle Grid.Column="2" Fill="{DynamicResource SceneManagerPanel}" Grid.Row="1" StrokeThickness="0.7"/>
+            <Grid Margin="0" Grid.Row="1" Grid.Column="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+        </Grid>
+
+        <!--FADER PANES-->
+        <Grid Margin="0" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="16*"/>
+                <ColumnDefinition Width="0.3*"/>
+                <ColumnDefinition Width="8*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="FaderLayerSelection" Background="{DynamicResource LayerPanel}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="3*"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="DisplayChannelFaders1to16" Content="1-16" Command="{Binding SwitchLayerCommand}" CommandParameter="Channels1to16" Margin="2" Grid.Row="1" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                <Button x:Name="DisplayChannelFaders17to32" Content="17-32" Command="{Binding SwitchLayerCommand}" CommandParameter="Channels17to32" Margin="2" Grid.Row="2" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                <Button x:Name="DisplayMasterFaders" Content="Master" Margin="2" Command="{Binding SwitchLayerCommand}" CommandParameter="Master" Grid.Row="3" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                <TextBlock x:Name="SendsGridSelector1" Text="Aux Sends" Margin="2" Grid.Row="4" Foreground="{DynamicResource Text}" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="10" Style="{DynamicResource Heading3}"/>
+                <Grid x:Name="DisplayAuxLayersPane" Margin="2,16,2,2" Grid.Row="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="1" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux1" Grid.Column="0" Grid.Row="0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="2" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux2" Grid.Column="1" Grid.Row="0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="3" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux3" Grid.Column="2" Grid.Row="0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="4" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux4" Grid.Column="3" Grid.Row="0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="5" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux5" Grid.Column="0" Grid.Row="1" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="6" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux6" Grid.Column="1" Grid.Row="1" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="7" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux7" Grid.Column="2" Grid.Row="1" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="8" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux8" Grid.Column="3" Grid.Row="1" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="9" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux9" Grid.Column="0" Grid.Row="2" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="10" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux10" Grid.Column="1" Grid.Row="2" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="11" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux11" Grid.Column="2" Grid.Row="2" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="12" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux12" Grid.Column="3" Grid.Row="2" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="13" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux13" Grid.Row="3" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}"/>
+                    <Button Content="14" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux14" Grid.Row="3" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}" Grid.Column="1"/>
+                    <Button Content="15" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux15" Grid.Row="3" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}" Grid.Column="2"/>
+                    <Button Content="16" Command="{Binding SwitchLayerCommand}" CommandParameter="Aux16" Grid.Row="3" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" Template="{DynamicResource ButtonControlTemplate1}" Style="{DynamicResource StandardButton}" Grid.Column="3"/>
+                </Grid>
+                <TextBlock Margin="2,0" TextWrapping="Wrap" Text="LAYER" Width="46" Style="{DynamicResource Heading2}" VerticalAlignment="Bottom"/>
+            </Grid>
+
+            <ItemsControl x:Name="DCAPane" Grid.Column="3" Background="{DynamicResource DCAPanel}" Margin="0" ItemsSource="{Binding VMixer.DCAs, Mode=TwoWay}" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:ChannelStripDCA 
+                            FaderValue="{Binding FaderLevel.Value, Mode=TwoWay}" Minimum="-99" Maximum="10" 
+                            On="{Binding On.Value, Mode=TwoWay}" 
+                            ChannelNumber="{Binding DCAIndex, Mode=TwoWay}" 
+                            ChannelLabel="{Binding ScribbleStrip.Content.Value, Mode=TwoWay}" LabelBackground="{Binding ScribbleStrip.BackgroundColor.Value, Converter={StaticResource ColorToBrushConverter}}" LabelFormatCommand="{Binding ScribbleStrip.ScribbleStripCommand}" LabelFontSize="{Binding ScribbleStrip.FontSize.Value}"
+                            AssignCommand="{Binding DCAAssignCommand, Source={StaticResource VMLocator}}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="1"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <Grid x:Name="FaderPanes" Grid.Column="1" Background="{DynamicResource FaderPanel}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="20*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <ItemsControl x:Name="FaderPane1_8" Background="{DynamicResource FaderPanel}" Margin="0" ItemsSource="{Binding Faders1to8, Mode=TwoWay}" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:ChannelStrip 
+                                FaderValue="{Binding FaderLevel.Value, Mode=TwoWay}" Minimum="-99" Maximum="10" 
+                                On="{Binding On.Value, Mode=TwoWay}" 
+                                Solo="{Binding Solo.Value, Mode=TwoWay}" 
+                                ChannelNumber="{Binding ChannelNoString}" 
+                                ChannelLabel="{Binding ScribbleStrip.Content.Value, Mode=TwoWay}" LabelBackground="{Binding ScribbleStrip.BackgroundColor.Value, Converter={StaticResource ColorToBrushConverter}}" LabelFormatCommand="{Binding ScribbleStrip.ScribbleStripCommand}" LabelFontSize="{Binding ScribbleStrip.FontSize.Value}"
+                                ChannelSelected="{Binding Selected.Value, Mode=TwoWay}" ChannelSelectCommand="{Binding ChannelSelectCommand, Mode=OneWay, Source={StaticResource VMLocator}}"
+                            />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <ItemsControl x:Name="FaderPane9_16" Background="{DynamicResource FaderPanel}" Margin="0" Grid.Column="2" ItemsSource="{Binding Faders9to16}" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:ChannelStrip 
+                                FaderValue="{Binding FaderLevel.Value, Mode=TwoWay}" Minimum="-99" Maximum="10" 
+                                On="{Binding On.Value, Mode=TwoWay}" 
+                                Solo="{Binding Solo.Value, Mode=TwoWay}" 
+                                ChannelNumber="{Binding ChannelNoString}" 
+                                ChannelLabel="{Binding ScribbleStrip.Content.Value, Mode=TwoWay}" LabelBackground="{Binding ScribbleStrip.BackgroundColor.Value, Converter={StaticResource ColorToBrushConverter}}" LabelFormatCommand="{Binding ScribbleStrip.ScribbleStripCommand}" LabelFontSize="{Binding ScribbleStrip.FontSize.Value}"
+                                ChannelSelected="{Binding Selected.Value, Mode=TwoWay}" ChannelSelectCommand="{Binding ChannelSelectCommand, Mode=OneWay, Source={StaticResource VMLocator}}"
+                            />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <local:ChannelStrip 
+                    FaderValue="{Binding VMixer.STOut.FaderLevel.Value, Mode=TwoWay}" Minimum="-99" Maximum="0" 
+                    On="{Binding VMixer.STOut.On.Value, Mode=TwoWay}" 
+                    ChannelNumber="{Binding VMixer.STOut.ChannelNoString}" 
+                    ChannelLabel="{Binding VMixer.STOut.ScribbleStrip.Content.Value, Mode=TwoWay}" LabelBackground="{Binding VMixer.STOut.ScribbleStrip.BackgroundColor.Value, Converter={StaticResource ColorToBrushConverter}}" LabelFormatCommand="{Binding VMixer.STOut.ScribbleStrip.ScribbleStripCommand}" LabelFontSize="{Binding VMixer.STOut.ScribbleStrip.FontSize.Value}"
+                    ChannelSelected="{Binding VMixer.STOut.Selected.Value, Mode=TwoWay}" ChannelSelectCommand="{Binding ChannelSelectCommand, Mode=OneWay, Source={StaticResource VMLocator}}"
+                    Grid.Column="4" Margin="0" Background="#4CFF4634"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
