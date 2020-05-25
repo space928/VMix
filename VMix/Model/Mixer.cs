@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -486,7 +483,7 @@ namespace VMix
         {
             pan = new DoubleParameter(src.pan);
             sendLevels = new ObservableCollection<ChannelSend>(src.sendLevels.Select(x => new ChannelSend(x)));
-            routing = new ObservableCollection<ChannelRouting>(src.routing.Select(x=>new ChannelRouting(x)));
+            routing = new ObservableCollection<ChannelRouting>(src.routing.Select(x => new ChannelRouting(x)));
             eq = new EQ(src.eq);
             dynamics = new Dynamics(src.dynamics);
             //TODO: Implement insert FX
@@ -758,7 +755,7 @@ namespace VMix
         private void ExecuteScribbleStripCommand(object param)
         {
             float mul = 0.95f;
-            switch((string)param)
+            switch ((string)param)
             {
                 case "SizeUp":
                     FontSize.Value *= 1.2;

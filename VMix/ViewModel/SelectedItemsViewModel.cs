@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace VMix.ViewModel
@@ -33,7 +31,7 @@ namespace VMix.ViewModel
         {
             //Fill in our arrays so that they have enough elements using the template if it exists
             //This is lazy but might work
-            if(template != null)
+            if (template != null)
             {
                 foreach (PropertyInfo p in template.GetType().GetProperties())
                 {
@@ -87,8 +85,8 @@ namespace VMix.ViewModel
                             RemoveRemotePropertyChangedEventHandlers(m);
                     }
 
-                    foreach(KeyValuePair<string, List<Parameter>> props in selectedChannelsParametersFlattened)
-                        foreach(Parameter p in props.Value)
+                    foreach (KeyValuePair<string, List<Parameter>> props in selectedChannelsParametersFlattened)
+                        foreach (Parameter p in props.Value)
                             p.PropertyChanged -= (sender, a) => PropagatePropertyChangeToViewModel(sender, a, props.Key);//Probs won't work
 
                     dontPropagateToSelection = true;
@@ -242,7 +240,8 @@ namespace VMix.ViewModel
                             RemoteParameterDictionaryBuilder(oi, newAddr);
                             i++;
                         }
-                    } else
+                    }
+                    else
                     {
                         object propVal = p.GetValue(o);
                         if (((INotifyPropertyChanged)propVal) == null)
@@ -300,7 +299,7 @@ namespace VMix.ViewModel
                         string newAddr = (parentAddr == "" ? "" : (parentAddr + ".")) + p.Name;
                         if (propVal.GetType().IsSubclassOf(typeof(Parameter)))
                         {
-                            if(!localParametersFlattened.ContainsKey(newAddr))
+                            if (!localParametersFlattened.ContainsKey(newAddr))
                                 localParametersFlattened.Add(newAddr, (Parameter)propVal);
                         }
                         //Recursively add more handlers
@@ -378,7 +377,7 @@ namespace VMix.ViewModel
             if (o.GetType().IsSubclassOf(typeof(Parameter)))
             {
                 //Console.WriteLine("[->VM] Added property change notification handler to local: " + parentAddr);
-                if(typeof(INotifyCollectionChanged).IsAssignableFrom(o.GetType()))
+                if (typeof(INotifyCollectionChanged).IsAssignableFrom(o.GetType()))
                     ((INotifyCollectionChanged)o).CollectionChanged += (sender, e) => PropagateCollectionChangeToSelectedChannels(sender, e, parentAddr);
                 else
                     ((INotifyPropertyChanged)o).PropertyChanged += (sender, e) => PropagatePropertyChangeToSelectedChannels(sender, e, parentAddr);
@@ -395,7 +394,7 @@ namespace VMix.ViewModel
                     {
                         //If the property is a collection, add event handlers to each of it's elements
                         int i = 0;
-                        foreach(object oi in (System.Collections.ICollection)o)
+                        foreach (object oi in (System.Collections.ICollection)o)
                         {
                             if (((INotifyPropertyChanged)oi) == null)
                                 continue;
@@ -406,7 +405,8 @@ namespace VMix.ViewModel
                             AddLocalPropertyChangeEventHandlers(oi, newAddr);
                             i++;
                         }
-                    } else
+                    }
+                    else
                     {
                         object propVal = p.GetValue(o);
                         //Add event listners
@@ -525,11 +525,13 @@ namespace VMix.ViewModel
                 //No selection
                 Type targetParamType = localParametersFlattened[addr].GetType();
                 localParametersFlattened[addr].CopyValueFrom((Parameter)Activator.CreateInstance(targetParamType));
-            }else if (selectedChannelsParametersFlattened[addr].Distinct().Count()==1)
+            }
+            else if (selectedChannelsParametersFlattened[addr].Distinct().Count() == 1)
             {
                 //Selection with all identical values
                 localParametersFlattened[addr].CopyValueFrom(selectedChannelsParametersFlattened[addr][0]);
-            } else
+            }
+            else
             {
                 //Selection with different values
                 Parameter targetParam = (Parameter)Activator.CreateInstance(localParametersFlattened[addr].GetType());

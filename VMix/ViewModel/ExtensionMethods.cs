@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace VMix
@@ -30,13 +28,13 @@ namespace VMix
         // Extension method for IEnumerable
         public static int GetContentsHashCode<T>(this ICollection<T> list)
         {
-            return list.Aggregate(17, (total, next) => total*31+next.GetHashCode());
+            return list.Aggregate(17, (total, next) => total * 31 + next.GetHashCode());
         }
 
         //This is beyond dodgy
         public static List<PropertyInfo> GetPropertiesBindableRecursive(this Type t)
         {
-            List<PropertyInfo> props = t.GetProperties().Where(x=>typeof(INotifyPropertyChanged).IsAssignableFrom(x.PropertyType)).ToList();
+            List<PropertyInfo> props = t.GetProperties().Where(x => typeof(INotifyPropertyChanged).IsAssignableFrom(x.PropertyType)).ToList();
             props.AddRange(RecursiveGetProperties(props));
             return props;
         }
@@ -45,7 +43,7 @@ namespace VMix
         {
             List<PropertyInfo> nprops = new List<PropertyInfo>(props);
             foreach (PropertyInfo p in props)
-                if(typeof(INotifyPropertyChanged).IsAssignableFrom(p.PropertyType))
+                if (typeof(INotifyPropertyChanged).IsAssignableFrom(p.PropertyType))
                     nprops.AddRange(RecursiveGetProperties(p.PropertyType.GetProperties().ToList()));
 
             return nprops;

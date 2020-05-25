@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
-
-using System.Diagnostics;
-using System.Windows;
 using System.Windows.Media;
 
 namespace VMix.ViewModel
@@ -44,7 +37,7 @@ namespace VMix.ViewModel
         //We can only return a known value if the value selected is the value of the control
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if((bool)value)
+            if ((bool)value)
             {
                 return (EQ.BandType)Enum.Parse(typeof(EQ.BandType), parameter.ToString());
             }
@@ -65,9 +58,9 @@ namespace VMix.ViewModel
             if ((int)value == -1)
                 return "ST";
             //Generic conversion
-            if(parameter != null && (int)value < 0)
+            if (parameter != null && (int)value < 0)
                 return (string)parameter;
-            else if(parameter != null)
+            else if (parameter != null)
                 return (string)parameter + ((int)value + 1);
             else
                 return (int)value + 1;
@@ -116,7 +109,7 @@ namespace VMix.ViewModel
         //This conversion is not possible
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if((bool)value)
+            if ((bool)value)
             {
                 return int.Parse(parameter as string);
             }
@@ -143,7 +136,7 @@ namespace VMix.ViewModel
 
             return x;
         }
-        
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //return (double)value;
@@ -173,7 +166,7 @@ namespace VMix.ViewModel
             //return (double)value;
             double x = (double)value;
 
-            if(LinToExp)
+            if (LinToExp)
                 x = LinExpConvert.Convert(x, Minimum, Maximum);
 
             x = (arcEndAngle - arcStartAngle) / (Maximum - Minimum) * (x - Minimum) + arcStartAngle;
@@ -189,7 +182,7 @@ namespace VMix.ViewModel
             if (LinToExp)
                 x = LinExpConvert.ConvertBack(x, Minimum, Maximum);
 
-            x = (x-arcStartAngle) / ((arcEndAngle - arcStartAngle) / (Maximum - Minimum)) + Minimum;
+            x = (x - arcStartAngle) / ((arcEndAngle - arcStartAngle) / (Maximum - Minimum)) + Minimum;
 
             return x;
         }
@@ -280,7 +273,7 @@ namespace VMix.ViewModel
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((bool)value)?"DarkTheme":"LightTheme";
+            return ((bool)value) ? "DarkTheme" : "LightTheme";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

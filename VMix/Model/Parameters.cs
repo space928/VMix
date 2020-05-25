@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace VMix
@@ -71,7 +67,7 @@ namespace VMix
 
         public DoubleParameter()
         {
-            
+
         }
 
         public DoubleParameter(double value)
@@ -111,7 +107,7 @@ namespace VMix
         }
         public static implicit operator double(DoubleParameter a)
         {
-            return a?.value??0;
+            return a?.value ?? 0;
         }
         public static implicit operator DoubleParameter(double a)
         {

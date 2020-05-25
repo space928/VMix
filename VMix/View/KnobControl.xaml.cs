@@ -7,9 +7,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace VMix
@@ -48,16 +46,16 @@ namespace VMix
         private MouseButtonEventHandler valueTypeInCloseHandler;
         #endregion Private Fields
 
-        public static readonly DependencyProperty TitleProperty =           DependencyProperty.Register("Title",           typeof(string), typeof(KnobControl));
-        public static readonly DependencyProperty UnitProperty =            DependencyProperty.Register("Unit",            typeof(string), typeof(KnobControl));
-        public static readonly DependencyProperty ValueProperty =           DependencyProperty.Register("Value",           typeof(double), typeof(KnobControl), new PropertyMetadata(0d, new PropertyChangedCallback(OnKnobValueChanged), new CoerceValueCallback(CoerceKnobValue)));
-        public static readonly DependencyProperty MinimumProperty =         DependencyProperty.Register("Minimum",         typeof(double), typeof(KnobControl));
-        public static readonly DependencyProperty MaximumProperty =         DependencyProperty.Register("Maximum",         typeof(double), typeof(KnobControl));
-        public static readonly DependencyProperty StepProperty =            DependencyProperty.Register("Step",            typeof(double), typeof(KnobControl));
-        public static readonly DependencyProperty LabelFontSizeProperty =   DependencyProperty.Register("LabelFontSize",   typeof(double), typeof(KnobControl));
-        public static readonly DependencyProperty DecimalPlacesProperty =   DependencyProperty.Register("DecimalPlaces",   typeof(int), typeof(KnobControl));
+        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(KnobControl));
+        public static readonly DependencyProperty UnitProperty = DependencyProperty.Register("Unit", typeof(string), typeof(KnobControl));
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(double), typeof(KnobControl), new PropertyMetadata(0d, new PropertyChangedCallback(OnKnobValueChanged), new CoerceValueCallback(CoerceKnobValue)));
+        public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register("Minimum", typeof(double), typeof(KnobControl));
+        public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register("Maximum", typeof(double), typeof(KnobControl));
+        public static readonly DependencyProperty StepProperty = DependencyProperty.Register("Step", typeof(double), typeof(KnobControl));
+        public static readonly DependencyProperty LabelFontSizeProperty = DependencyProperty.Register("LabelFontSize", typeof(double), typeof(KnobControl));
+        public static readonly DependencyProperty DecimalPlacesProperty = DependencyProperty.Register("DecimalPlaces", typeof(int), typeof(KnobControl));
         public static readonly DependencyProperty MetricTruncationProperty = DependencyProperty.Register("MetricTruncation", typeof(bool), typeof(KnobControl));
-        public static readonly DependencyProperty ExponentialProperty =     DependencyProperty.Register("Exponential",     typeof(bool), typeof(KnobControl));
+        public static readonly DependencyProperty ExponentialProperty = DependencyProperty.Register("Exponential", typeof(bool), typeof(KnobControl));
 
         private static readonly RoutedEvent KnobValueChangedEvent = EventManager.RegisterRoutedEvent("KnobValueChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(KnobControl));
 
@@ -90,7 +88,7 @@ namespace VMix
         public double Value
         {
             get { return (double)GetValue(ValueProperty); }
-            set {SetValue(ValueProperty, value); }
+            set { SetValue(ValueProperty, value); }
         }
         [Description("Gets or sets the minimum value for the knob control. It can not be more than the maximum."), Category("Knob Control")]
         public double Minimum
@@ -173,12 +171,13 @@ namespace VMix
                     int y = 0;
                     SetCursorPos(x, y);
                     previousMousePosition.Y = -1;
-                } else if(newMousePosition.Y <= 1)
+                }
+                else if (newMousePosition.Y <= 1)
                 {
                     int x = (int)newMousePosition.X;
                     int y = (int)System.Windows.SystemParameters.PrimaryScreenHeight;
                     SetCursorPos(x, y);
-                    previousMousePosition.Y = System.Windows.SystemParameters.PrimaryScreenHeight+1;
+                    previousMousePosition.Y = System.Windows.SystemParameters.PrimaryScreenHeight + 1;
                 }
 
                 if (Math.Abs(dY) > mouseMoveThreshold)

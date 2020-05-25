@@ -124,7 +124,7 @@ namespace VMix
         ///     An event reporting that the IsMouseOver property changed.
         /// </summary>
         private bool HandleIsMouseOverChanged()
-        { 
+        {
             return false;
         }
     }

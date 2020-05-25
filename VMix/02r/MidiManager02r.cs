@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CoreMidi;
-using Commons.Music.Midi;
-using System.ComponentModel;
 
 namespace VMix
 {
@@ -36,22 +31,23 @@ namespace VMix
             {
                 case 0x00://Numeric data
                     // ===== FADER
-                    if(msg[5] == 0x0 && msg[6] < 0x57)
+                    if (msg[5] == 0x0 && msg[6] < 0x57)
                     {
                         DecodeFaderMsg(msg.Skip(6).ToArray());
                     }// ===== SEND
-                    else if(msg[5] == 0x0 && msg[6] >= 0x57)
+                    else if (msg[5] == 0x0 && msg[6] >= 0x57)
                     {
                         DecodeSendMsg(msg.Skip(6).ToArray());
                     }// ===== PAN
-                    else if(msg[5] == 0x04)
+                    else if (msg[5] == 0x04)
                     {
                         DecodePanMsg(msg.Skip(6).ToArray());
                     }// ===== EQ
-                    else if(msg[5] == 0x0A)
+                    else if (msg[5] == 0x0A)
                     {
                         DecodeEqMsg(msg.Skip(6).ToArray());
-                    } else
+                    }
+                    else
                     {
                         Console.WriteLine("Warning illegal message received from device: \n" + msg);
                         return;
@@ -113,14 +109,14 @@ namespace VMix
             vMixer.MixChannels[channelNo].SetPostDCAFaderLevel(vMixer.DCAs.ToArray(), faderVal);
 
             //Check if multiple adjacent faders are being sent
-            if(msg.Length>4)
+            if (msg.Length > 4)
             {
                 int cbyte = 3;
-                while(msg[cbyte] != 0xf7 && cbyte < 100)//Sanity check in case the message has no end
+                while (msg[cbyte] != 0xf7 && cbyte < 100)//Sanity check in case the message has no end
                 {
                     channelNo++;
 
-                    faderVal = (msg[cbyte] * 0xf + msg[cbyte+1]) / 120.0;
+                    faderVal = (msg[cbyte] * 0xf + msg[cbyte + 1]) / 120.0;
 
                     vMixer.MixChannels[channelNo].SetPostDCAFaderLevel(vMixer.DCAs.ToArray(), faderVal);
 
@@ -160,7 +156,7 @@ namespace VMix
 
             //The channel number is made up of part msg[0] for which block of 8 it falls under and the first 3 bits of msg[1]
             int channelBank = -1;
-            switch(msg[0])
+            switch (msg[0])
             {
                 case 0x09://MIC 1-8
                     channelBank = 0;
@@ -210,7 +206,7 @@ namespace VMix
         private void LogMsg(byte[] msg)
         {
             foreach (byte b in msg)
-                Console.Write(Convert.ToString(b,16) + " ");
+                Console.Write(Convert.ToString(b, 16) + " ");
             Console.WriteLine();
         }
         #endregion
@@ -225,7 +221,7 @@ namespace VMix
             faderMsgs.OrderBy(x => x[6]);
             while (faderMsgs.Count > 0)
             {
-                List<byte> newMsg = new List<byte>(faderMsgs.Dequeue() as IEnumerable<byte>);
+                List<byte> newMsg = new List<byte>(faderMsgs.Dequeue());
                 //Remove stop byte
                 newMsg.RemoveAt(newMsg.Count - 1);
                 int lastIndex = ParseChannelNumber(newMsg.ToArray(), 6);
@@ -239,7 +235,8 @@ namespace VMix
                         lastIndex++;
                         newMsg.Add(nextMsg[7]);
                         newMsg.Add(nextMsg[8]);
-                    } else
+                    }
+                    else
                     {
                         contiguous = false;
                     }
@@ -264,7 +261,7 @@ namespace VMix
             double faderVal = Math.Round(m.GetPostDCAFaderLevel01(vMixer.DCAs.ToArray()) * 127);
             double msb = Math.Floor(faderVal / 16.0);
             msg.Add(Convert.ToByte((int)msb));//MSB
-            msg.Add(Convert.ToByte((int)(faderVal-msb*16)));//LSB
+            msg.Add(Convert.ToByte((int)(faderVal - msb * 16)));//LSB
 
             msg.Add(0xf7);//End msg
             SendRawMidiMessage(msg.ToArray(), m.GetHashCode());
@@ -301,7 +298,7 @@ namespace VMix
             else if (m.ChannelIndex < 40)
                 msg.Add(0x0d);
 
-            msg.Add(Convert.ToByte((m.ChannelIndex & 0b111) + (m.On?8:0)));
+            msg.Add(Convert.ToByte((m.ChannelIndex & 0b111) + (m.On ? 8 : 0)));
 
             msg.Add(0xf7);//End msg
             SendRawMidiMessage(msg.ToArray(), m.GetHashCode());

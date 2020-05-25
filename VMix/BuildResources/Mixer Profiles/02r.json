@@ -1,0 +1,31 @@
+{
+  "MixChannels": 40,
+  "AuxChannels": 8,
+  "BusChannels": 8,
+  "SpecialChannels": [
+    "EFF1",
+    "EFF2"
+  ],
+  "MidiManager": "02r",
+  "ChannelStripHardware": [
+    "Dynamics",
+    "ParametricEQ",
+    "Attenuation",
+    "Delay",
+    "Routing"
+  ],
+  "FXModules": [
+    {
+      "FXName": "DefaultFX",
+      "FXParameters": [
+        {
+          "ParamName": null,
+          "Min": 0,
+          "Max": 0,
+          "ParamTypeString": null,
+          "EnumValues": null
+        }
+      ]
+    }
+  ]
+}

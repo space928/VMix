@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VMix
 {
@@ -16,7 +13,7 @@ namespace VMix
         {
             //return (double)value;
             double x = (double)value;
-            if(normalizeIn)
+            if (normalizeIn)
                 x = (x - min) / (max - min);
             x = EmulatedLinExpConvert(x);
             if (!normalizeOut)

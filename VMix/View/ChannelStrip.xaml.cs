@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace VMix
 {
@@ -22,18 +11,18 @@ namespace VMix
     public partial class ChannelStrip : UserControl
     {
         //Dep Properties
-        public static readonly DependencyProperty ChannelNumberProperty =        DependencyProperty.Register("ChannelNumber",        typeof(string), typeof(ChannelStrip));
-        public static readonly DependencyProperty ChannelSelectedProperty =      DependencyProperty.Register("ChannelSelected",      typeof(bool), typeof(ChannelStrip));
+        public static readonly DependencyProperty ChannelNumberProperty = DependencyProperty.Register("ChannelNumber", typeof(string), typeof(ChannelStrip));
+        public static readonly DependencyProperty ChannelSelectedProperty = DependencyProperty.Register("ChannelSelected", typeof(bool), typeof(ChannelStrip));
         public static readonly DependencyProperty ChannelSelectCommandProperty = DependencyProperty.Register("ChannelSelectCommand", typeof(ICommand), typeof(ChannelStrip));
-        public static readonly DependencyProperty ChannelLabelProperty =         DependencyProperty.Register("ChannelLabel",         typeof(string), typeof(ChannelStrip));
-        public static readonly DependencyProperty OnProperty =                   DependencyProperty.Register("On",                   typeof(bool), typeof(ChannelStrip));
-        public static readonly DependencyProperty SoloProperty =                 DependencyProperty.Register("Solo",                 typeof(bool), typeof(ChannelStrip));
-        public static readonly DependencyProperty MinimumProperty =              DependencyProperty.Register("Minimum",              typeof(double), typeof(ChannelStrip));
-        public static readonly DependencyProperty MaximumProperty =              DependencyProperty.Register("Maximum",              typeof(double), typeof(ChannelStrip));
-        public static readonly DependencyProperty FaderValueProperty =           DependencyProperty.Register("FaderValue",           typeof(double),typeof(ChannelStrip));
-        public static readonly DependencyProperty LabelFormatCommandProperty =   DependencyProperty.Register("LabelFormatCommand",   typeof(ICommand), typeof(ChannelStrip));
-        public static readonly DependencyProperty LabelFontSizeProperty =        DependencyProperty.Register("LabelFontSize",        typeof(double), typeof(ChannelStrip));
-        public static readonly DependencyProperty LabelBackgroundProperty =      DependencyProperty.Register("LabelBackground",      typeof(SolidColorBrush), typeof(ChannelStrip));
+        public static readonly DependencyProperty ChannelLabelProperty = DependencyProperty.Register("ChannelLabel", typeof(string), typeof(ChannelStrip));
+        public static readonly DependencyProperty OnProperty = DependencyProperty.Register("On", typeof(bool), typeof(ChannelStrip));
+        public static readonly DependencyProperty SoloProperty = DependencyProperty.Register("Solo", typeof(bool), typeof(ChannelStrip));
+        public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register("Minimum", typeof(double), typeof(ChannelStrip));
+        public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register("Maximum", typeof(double), typeof(ChannelStrip));
+        public static readonly DependencyProperty FaderValueProperty = DependencyProperty.Register("FaderValue", typeof(double), typeof(ChannelStrip));
+        public static readonly DependencyProperty LabelFormatCommandProperty = DependencyProperty.Register("LabelFormatCommand", typeof(ICommand), typeof(ChannelStrip));
+        public static readonly DependencyProperty LabelFontSizeProperty = DependencyProperty.Register("LabelFontSize", typeof(double), typeof(ChannelStrip));
+        public static readonly DependencyProperty LabelBackgroundProperty = DependencyProperty.Register("LabelBackground", typeof(SolidColorBrush), typeof(ChannelStrip));
 
         private static readonly RoutedEvent SelectEvent = EventManager.RegisterRoutedEvent("SelectButton", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ChannelStrip));
         private static readonly RoutedEvent OnEvent = EventManager.RegisterRoutedEvent("OnButton", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ChannelStrip));
@@ -115,7 +104,7 @@ namespace VMix
         public double FaderValue
         {
             get { return (double)GetValue(FaderValueProperty); }
-            set { SetValue(FaderValueProperty, value);  }
+            set { SetValue(FaderValueProperty, value); }
         }
         public ICommand LabelFormatCommand
         {
@@ -135,7 +124,7 @@ namespace VMix
 
         public void Init()
         {
-            
+
         }
 
         public void Update()

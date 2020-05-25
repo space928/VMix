@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using VMix.ViewModel;
 
 namespace VMix
@@ -23,14 +12,14 @@ namespace VMix
     public partial class ChannelStripDCA : UserControl
     {
         //Dep Properties
-        public static readonly DependencyProperty ChannelNumberProperty =   DependencyProperty.Register("ChannelNumber",    typeof(int), typeof(ChannelStripDCA));
-        public static readonly DependencyProperty ChannelLabelProperty =    DependencyProperty.Register("ChannelLabel",     typeof(string), typeof(ChannelStripDCA));
-        public static readonly DependencyProperty OnProperty =              DependencyProperty.Register("On",               typeof(bool), typeof(ChannelStripDCA));
-        public static readonly DependencyProperty SoloProperty =            DependencyProperty.Register("Solo",             typeof(bool), typeof(ChannelStripDCA));
-        public static readonly DependencyProperty MinimumProperty =         DependencyProperty.Register("Minimum",          typeof(double), typeof(ChannelStripDCA));
-        public static readonly DependencyProperty MaximumProperty =         DependencyProperty.Register("Maximum",          typeof(double), typeof(ChannelStripDCA));
-        public static readonly DependencyProperty FaderValueProperty =      DependencyProperty.Register("FaderValue",       typeof(double),typeof(ChannelStripDCA));
-        public static readonly DependencyProperty AssignCommandProperty =   DependencyProperty.Register("AssignCommand",    typeof(MixerCommand), typeof(ChannelStripDCA));
+        public static readonly DependencyProperty ChannelNumberProperty = DependencyProperty.Register("ChannelNumber", typeof(int), typeof(ChannelStripDCA));
+        public static readonly DependencyProperty ChannelLabelProperty = DependencyProperty.Register("ChannelLabel", typeof(string), typeof(ChannelStripDCA));
+        public static readonly DependencyProperty OnProperty = DependencyProperty.Register("On", typeof(bool), typeof(ChannelStripDCA));
+        public static readonly DependencyProperty SoloProperty = DependencyProperty.Register("Solo", typeof(bool), typeof(ChannelStripDCA));
+        public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register("Minimum", typeof(double), typeof(ChannelStripDCA));
+        public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register("Maximum", typeof(double), typeof(ChannelStripDCA));
+        public static readonly DependencyProperty FaderValueProperty = DependencyProperty.Register("FaderValue", typeof(double), typeof(ChannelStripDCA));
+        public static readonly DependencyProperty AssignCommandProperty = DependencyProperty.Register("AssignCommand", typeof(MixerCommand), typeof(ChannelStripDCA));
         public static readonly DependencyProperty LabelFormatCommandProperty = DependencyProperty.Register("LabelFormatCommand", typeof(ICommand), typeof(ChannelStripDCA));
         public static readonly DependencyProperty LabelFontSizeProperty = DependencyProperty.Register("LabelFontSize", typeof(double), typeof(ChannelStripDCA));
         public static readonly DependencyProperty LabelBackgroundProperty = DependencyProperty.Register("LabelBackground", typeof(SolidColorBrush), typeof(ChannelStripDCA));
@@ -105,7 +94,7 @@ namespace VMix
         public double FaderValue
         {
             get { return (double)GetValue(FaderValueProperty); }
-            set { SetValue(FaderValueProperty, value);  }
+            set { SetValue(FaderValueProperty, value); }
         }
         public MixerCommand AssignCommand
         {
@@ -130,7 +119,7 @@ namespace VMix
 
         public void Init()
         {
-            
+
         }
 
         public void Update()
@@ -171,7 +160,7 @@ namespace VMix
             MenuItem item = sender as MenuItem;
             float mul = 0.5f;// ((MainWindow)Application.Current.MainWindow).darkMode ? 0.5f : 1.5f;
 
-            switch(item.Header as string)
+            switch (item.Header as string)
             {
                 case "Red":
                     ChannelName.Background = new SolidColorBrush(Color.Multiply(Color.FromRgb(255, 5, 10), mul));
@@ -200,10 +189,11 @@ namespace VMix
         private void ChannelNameFontSize_Click(object sender, RoutedEventArgs e)
         {
             MenuItem item = sender as MenuItem;
-            if(item.Header as string == "Font Size +")
+            if (item.Header as string == "Font Size +")
             {
                 ChannelName.FontSize *= 1.2;
-            } else
+            }
+            else
             {
                 ChannelName.FontSize /= 1.2;
             }

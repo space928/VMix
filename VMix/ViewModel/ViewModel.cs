@@ -1,15 +1,9 @@
 ﻿using Commons.Music.Midi;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Shapes;
 
 namespace VMix.ViewModel
 {
@@ -156,7 +150,7 @@ namespace VMix.ViewModel
             }
         }
 
-        
+
 
         private ICommand darkModeToggleCommand;
         public ICommand DarkModeToggleCommand
@@ -212,12 +206,12 @@ namespace VMix.ViewModel
 
         private void CreateMidiBindings()
         {
-            foreach(Channel m in VMixer.MixChannels)
+            foreach (Channel m in VMixer.MixChannels)
             {
                 m.FaderLevel.PropertyChanged += new PropertyChangedEventHandler((sender, e) => MidiManager.HandleSendFaderMsg(sender, e, m));
                 m.On.PropertyChanged += new PropertyChangedEventHandler((sender, e) => MidiManager.HandleSendOnMsg(sender, e, m));
 
-                if(m.GetType() == typeof(MixChannel))
+                if (m.GetType() == typeof(MixChannel))
                 {
                     //MixChannel specific properties are bound here
                     //((MixChannel)m).eq.on.PropertyChanged += new PropertyChangedEventHandler((sender, e) => MidiManager.HandleSendOnMsg(sender, e, m));
@@ -231,7 +225,7 @@ namespace VMix.ViewModel
                     //MixBus specific properties are bound here
                 }
             }
-            foreach(DCA dca in VMixer.DCAs)
+            foreach (DCA dca in VMixer.DCAs)
             {
                 dca.FaderLevel.PropertyChanged += new PropertyChangedEventHandler((sender, e) => MidiManager.HandleDCAFaderUpdate(sender, e, dca));
             }
@@ -279,9 +273,9 @@ namespace VMix.ViewModel
             int dcaInd = (int)param;
             //Clear existing assignments
             VMixer.DCAs[dcaInd].AssignedChannels.Clear();
-            foreach(Channel c in VMixer.MixChannels)
+            foreach (Channel c in VMixer.MixChannels)
             {
-                if(c.Selected)
+                if (c.Selected)
                 {
                     VMixer.DCAs[dcaInd].AssignChannel(c);
                     c.Selected = false;
@@ -312,17 +306,17 @@ namespace VMix.ViewModel
             {
                 Channel nChannel = null;
 
-                switch(faderMode)
+                switch (faderMode)
                 {
                     case FaderPage.Channels1to16:
                         nChannel = allChannels.FirstOrDefault(x => x.ChannelIndex == i && x.ChannelType == ChannelType.Channels);
                         break;
                     case FaderPage.Channels17to32:
-                        nChannel = allChannels.FirstOrDefault(x => x.ChannelIndex == i+16 && x.ChannelType == ChannelType.Channels);
+                        nChannel = allChannels.FirstOrDefault(x => x.ChannelIndex == i + 16 && x.ChannelType == ChannelType.Channels);
                         break;
                     case FaderPage.Master:
-                        if(i>=8)
-                            nChannel = allChannels.FirstOrDefault(x => x.ChannelIndex == i-8 && x.ChannelType == ChannelType.MixBusses);//Mix busses in the last 8, auxes in the first 8
+                        if (i >= 8)
+                            nChannel = allChannels.FirstOrDefault(x => x.ChannelIndex == i - 8 && x.ChannelType == ChannelType.MixBusses);//Mix busses in the last 8, auxes in the first 8
                         else
                             nChannel = allChannels.FirstOrDefault(x => x.ChannelIndex == i && x.ChannelType == ChannelType.Auxes);
                         break;
@@ -356,8 +350,8 @@ namespace VMix.ViewModel
                 }
                 else
                 {
-                    if (Faders9to16.Count > i-8)
-                        Faders9to16[i-8] = nChannel;
+                    if (Faders9to16.Count > i - 8)
+                        Faders9to16[i - 8] = nChannel;
                     else
                         Faders9to16.Add(nChannel);
                 }
@@ -392,7 +386,7 @@ namespace VMix.ViewModel
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(System.Windows.Application.Current.Windows[0]))
                 if (System.Windows.Application.Current?.Resources?.MergedDictionaries != null)
                     App.Current.Resources.MergedDictionaries[0].Source = new Uri($"/Themes/{theme}.xaml", UriKind.Relative);
-            else
+                else
                     Console.WriteLine("Visual Studio XAML Designer is being stupid again...");
         }
 
@@ -404,7 +398,7 @@ namespace VMix.ViewModel
         private void UpdateSelectedChannelBindings(Channel channelToView = null)
         {
             SelectedChannel.SelectedChannels.Clear();
-            foreach(Channel c in allChannels)
+            foreach (Channel c in allChannels)
             {
                 if (c.GetType() == typeof(MixChannel))
                     if (c.Selected)

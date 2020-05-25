@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace VMix
@@ -47,7 +46,8 @@ namespace VMix
                 midiInput = access.OpenInputAsync(deviceInput.Id).Result;
 
                 midiInput.MessageReceived += MidiInput_MessageReceived;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
             }
@@ -121,7 +121,7 @@ namespace VMix
             midiMsgQueue.Remove(hashCode);
             midiMsgQueue.Add(hashCode, bytes);
 
-            if(midiMsgTask.IsCompleted)
+            if (midiMsgTask.IsCompleted)
             {
                 midiMsgTask = Task.Delay((int)(1000f / msgRate));
                 midiMsgTask.ContinueWith(x => SendMessageQueue());
@@ -163,7 +163,7 @@ namespace VMix
 
         public void HandleSendFaderMsg(object sender, PropertyChangedEventArgs e, Channel m)
         {
-            if(!vMixer.remoteSet)
+            if (!vMixer.remoteSet)
             {
                 vMixer.remoteSet = false;
                 SendFaderMsg(m);
@@ -175,7 +175,7 @@ namespace VMix
             if (!vMixer.remoteSet)
             {
                 vMixer.remoteSet = false;
-                foreach(Channel c in dca.AssignedChannels)
+                foreach (Channel c in dca.AssignedChannels)
                     SendFaderMsg(c);
             }
         }

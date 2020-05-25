@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
+using System.Linq;
 
 namespace VMix
 {
@@ -34,7 +31,8 @@ namespace VMix
             {
                 settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsFileName));
                 settings.PropertyChanged += Settings_PropertyChanged;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine("Load settings error: ");
                 Console.WriteLine(e);
@@ -182,7 +180,7 @@ namespace VMix
     public class FXModule
     {
         public string FXName { get; set; }
-        public FXParameter[] FXParameters { get; set;}
+        public FXParameter[] FXParameters { get; set; }
 
         public FXModule()
         {

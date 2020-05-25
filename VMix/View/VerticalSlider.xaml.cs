@@ -1,20 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace VMix
 {
@@ -33,16 +23,16 @@ namespace VMix
         private MouseButtonEventHandler valueTypeInCloseHandler;
 
         //Component Dependancy Properties
-        public static readonly DependencyProperty MinimumProperty =         DependencyProperty.Register("Minimum",  typeof(double), typeof(VerticalSlider));
-        public static readonly DependencyProperty MaximumProperty =         DependencyProperty.Register("Maximum",  typeof(double), typeof(VerticalSlider));
-        public static readonly DependencyProperty SmallIncrementProperty =  DependencyProperty.Register("SmallIncrement",  typeof(double), typeof(VerticalSlider));
-        public static readonly DependencyProperty LargeIncrementProperty =  DependencyProperty.Register("LargeIncrement",  typeof(double), typeof(VerticalSlider));
+        public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register("Minimum", typeof(double), typeof(VerticalSlider));
+        public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register("Maximum", typeof(double), typeof(VerticalSlider));
+        public static readonly DependencyProperty SmallIncrementProperty = DependencyProperty.Register("SmallIncrement", typeof(double), typeof(VerticalSlider));
+        public static readonly DependencyProperty LargeIncrementProperty = DependencyProperty.Register("LargeIncrement", typeof(double), typeof(VerticalSlider));
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(double), typeof(VerticalSlider), new PropertyMetadata(0d, new PropertyChangedCallback(OnSliderValueChanged), new CoerceValueCallback(CoerceSliderValue)));
-        public static readonly DependencyProperty TitleProperty =           DependencyProperty.Register("Title",  typeof(string), typeof(VerticalSlider));
-        public static readonly DependencyProperty UnitProperty =            DependencyProperty.Register("Unit",  typeof(string), typeof(VerticalSlider));
-        public static readonly DependencyProperty TickSpacingProperty =     DependencyProperty.Register("TickSpacing",  typeof(double), typeof(VerticalSlider));
-        public static readonly DependencyProperty ValueSpacingProperty =    DependencyProperty.Register("ValueSpacing", typeof(double), typeof(VerticalSlider));
-        public static readonly DependencyProperty DecimalPlacesProperty =   DependencyProperty.Register("DecimalPlaces",  typeof(int), typeof(VerticalSlider));
+        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(VerticalSlider));
+        public static readonly DependencyProperty UnitProperty = DependencyProperty.Register("Unit", typeof(string), typeof(VerticalSlider));
+        public static readonly DependencyProperty TickSpacingProperty = DependencyProperty.Register("TickSpacing", typeof(double), typeof(VerticalSlider));
+        public static readonly DependencyProperty ValueSpacingProperty = DependencyProperty.Register("ValueSpacing", typeof(double), typeof(VerticalSlider));
+        public static readonly DependencyProperty DecimalPlacesProperty = DependencyProperty.Register("DecimalPlaces", typeof(int), typeof(VerticalSlider));
         //public static readonly DependencyProperty ValueChangedProp =    DependencyProperty.Register("ValueChanged",     typeof(RoutedPropertyChangedEventHandler<double>), typeof(VerticalSlider));
 
         private static readonly RoutedEvent ValueChangeEvent = EventManager.RegisterRoutedEvent("ValueChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(VerticalSlider));
@@ -159,7 +149,7 @@ namespace VMix
                 return;
 
             Label nLabel = new Label();
-            nLabel.Content = Math.Round(LinExpConvert.ConvertBack(value,Minimum,Maximum, true, false), DecimalPlaces).ToString();
+            nLabel.Content = Math.Round(LinExpConvert.ConvertBack(value, Minimum, Maximum, true, false), DecimalPlaces).ToString();
             nLabel.FontSize = 8;
             nLabel.HorizontalAlignment = HorizontalAlignment.Stretch;
             nLabel.VerticalAlignment = VerticalAlignment.Bottom;
@@ -276,9 +266,9 @@ namespace VMix
         {
             Update();
             //TODO: VS Designer still doesn't really like this
-            if(!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
-                if(Application.Current?.MainWindow != null)
-                Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+                if (Application.Current?.MainWindow != null)
+                    Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
         }
 
         //Update labels if the window changes size
