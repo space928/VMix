@@ -18,6 +18,7 @@ VMix also adds 8 virtual DCAs (fader groups) which can be freely assigned and st
 For non-commercial use please feel free to download the binaries from the releases tab. The application is portable and requires no additional installation.
 ## Building
 Using Microsoft Visual Studio 2019, the application can be built from the provided solution file.
+VMix is built using WPF on .NET Core 3.1
 ### Dependencies
 These can be downloaded using nuget using the included package manifest.
   - Newtonsoft.JSON
