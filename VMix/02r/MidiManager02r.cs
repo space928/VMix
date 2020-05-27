@@ -21,6 +21,8 @@ namespace VMix
 
         public override void DecodeMsg(byte[] msg)
         {
+            if (msg == null)
+                return;
             //Simple sanity checks to ensure this is a message destined for us
             if (msg.Length < 7)
                 return;//Don't log this it probably wasn't meant for us anyway, no need to pollute logs
@@ -83,7 +85,7 @@ namespace VMix
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        private int ParseChannelNumber(byte[] msg, int startIndex = 0)
+        private static int ParseChannelNumber(byte[] msg, int startIndex = 0)
         {
             int channelNo = -1;
 
@@ -203,7 +205,7 @@ namespace VMix
             }
         }
 
-        private void LogMsg(byte[] msg)
+        private static void LogMsg(byte[] msg)
         {
             foreach (byte b in msg)
                 Console.Write(Convert.ToString(b, 16) + " ");

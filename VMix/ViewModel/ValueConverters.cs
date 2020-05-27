@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Windows;
 using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Markup;
 using System.Windows.Media;
 
 namespace VMix.ViewModel
@@ -23,8 +28,8 @@ namespace VMix.ViewModel
         }
     }
 
-    [ValueConversion(typeof(EQ.BandType), typeof(bool))]
-    public class EQBandTypeConverter : IValueConverter
+    /*[ValueConversion(typeof(EnumParameter<>), typeof(bool))]
+    public class EnumConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -43,7 +48,7 @@ namespace VMix.ViewModel
             }
             return null;
         }
-    }
+    }*/
 
     /// <summary>
     /// Converts and index to a number by adding 1 and casting to a string. Will also concatinate the value of the parameter before the value.
@@ -72,28 +77,6 @@ namespace VMix.ViewModel
         }
     }
 
-    /// <summary>
-    /// Converts an array of bools and an index into a single bool.
-    /// </summary>
-    [ValueConversion(typeof(bool[]), typeof(bool))]
-    public class BoolArrayIndexConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (int.TryParse(parameter as string, out int bInd) && value != null)
-            {
-                return ((bool[])value)[bInd];
-            }
-            return false;
-        }
-
-        //This conversion is not possible
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
     [ValueConversion(typeof(int), typeof(bool))]
     public class IndexConverter : IValueConverter
     {
@@ -106,7 +89,6 @@ namespace VMix.ViewModel
             return false;
         }
 
-        //This conversion is not possible
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if ((bool)value)
@@ -114,6 +96,23 @@ namespace VMix.ViewModel
                 return int.Parse(parameter as string);
             }
             return null;
+        }
+    }
+
+    [ValueConversion(typeof(bool[]), typeof(bool))]
+    public class BoolArrayIndexConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || parameter == null)
+                return false;
+            return ((bool[])value)[int.Parse((string)parameter)];
+        }
+
+        //This conversion is not possible
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -148,28 +147,49 @@ namespace VMix.ViewModel
         }
     }
 
+    [ValueConversion(typeof(object[]), typeof(object))]
+    public class MultiObjectPackerConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            return value as object[];
+        }
+    }
+
     /// <summary>
-    /// Applies the slight exponential falloff to the faders
+    /// Converts a value into a knob rotation.
+    /// Parameters:
+    ///  - double[0]: Minimum
+    ///  - double[1]: Maximum
+    ///  - bool[2]: LinToExp
     /// </summary>
     [ValueConversion(typeof(double), typeof(double))]
     public class KnobValueToAngleConverter : IValueConverter
     {
-        private int arcEndAngle = 120;
-        private int arcStartAngle = -120;
-
-        public double Minimum { get; set; }
-        public double Maximum { get; set; }
-        public bool LinToExp { get; set; }
+        private int arcEndAngle = 150;
+        private int arcStartAngle = -150;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //return (double)value;
             double x = (double)value;
 
-            if (LinToExp)
-                x = LinExpConvert.Convert(x, Minimum, Maximum);
+            object[] paramsList = parameter as object[];
+            if ((paramsList?.Length??0) < 3)
+                return 0;
+            double minimum = (double)paramsList[0];
+            double maximum = (double)paramsList[1];
+            bool linToExp = (bool)paramsList[2];
 
-            x = (arcEndAngle - arcStartAngle) / (Maximum - Minimum) * (x - Minimum) + arcStartAngle;
+            if (linToExp)
+                x = LinExpConvert.Convert(x, minimum, maximum);
+
+            x = (arcEndAngle - arcStartAngle) / (maximum - minimum) * (x - minimum) + arcStartAngle;
 
             return x;
         }
@@ -179,10 +199,17 @@ namespace VMix.ViewModel
             //return (double)value;
             double x = (double)value;
 
-            if (LinToExp)
-                x = LinExpConvert.ConvertBack(x, Minimum, Maximum);
+            object[] paramsList = parameter as object[];
+            if ((paramsList?.Length ?? 0) < 3)
+                return 0;
+            double minimum = (double)paramsList[0];
+            double maximum = (double)paramsList[1];
+            bool linToExp = (bool)paramsList[2];
 
-            x = (x - arcStartAngle) / ((arcEndAngle - arcStartAngle) / (Maximum - Minimum)) + Minimum;
+            if (linToExp)
+                x = LinExpConvert.ConvertBack(x, minimum, maximum);
+
+            x = (x - arcStartAngle) / ((arcEndAngle - arcStartAngle) / (maximum - minimum)) + minimum;
 
             return x;
         }
@@ -308,6 +335,79 @@ namespace VMix.ViewModel
         {
             string[] profiles = SettingsManager.GetMixerProfiles();
             return profiles[(int)value];
+        }
+    }
+
+    [ContentProperty(nameof(Binding))]
+    public class ConverterBindableParameter : MarkupExtension
+    {
+        #region Public Properties
+
+        public Binding Binding { get; set; }
+        public BindingMode Mode { get; set; }
+        public IValueConverter Converter { get; set; }
+        public MultiBinding ConverterParameter { get; set; }
+
+        #endregion
+
+        public ConverterBindableParameter()
+        {
+
+        }
+
+        public ConverterBindableParameter(string path)
+        {
+            Binding = new Binding(path);
+        }
+
+        public ConverterBindableParameter(Binding binding)
+        {
+            Binding = binding;
+        }
+
+        #region Overridden Methods
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            var multiBinding = new MultiBinding();
+            Binding.Mode = Mode;
+            multiBinding.Bindings.Add(Binding);
+            if (ConverterParameter != null)
+            {
+                ConverterParameter.Mode = BindingMode.OneWay;
+                foreach(Binding b in ConverterParameter.Bindings)
+                    multiBinding.Bindings.Add(b);
+            }
+            var adapter = new MultiValueConverterAdapter
+            {
+                Converter = Converter
+            };
+            multiBinding.Converter = adapter;
+            return multiBinding.ProvideValue(serviceProvider);
+        }
+
+        #endregion
+
+        [ContentProperty(nameof(Converter))]
+        private class MultiValueConverterAdapter : IMultiValueConverter
+        {
+            public IValueConverter Converter { get; set; }
+
+            private object lastParameter;
+
+            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (Converter == null) return values[0]; // Required for VS design-time
+                if (values.Length > 1) lastParameter = values.Skip(1).ToArray();
+                return Converter.Convert(values[0], targetType, lastParameter, culture);
+            }
+
+            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+            {
+                if (Converter == null) return new object[] { value }; // Required for VS design-time
+
+                return new object[] { Converter.ConvertBack(value, targetTypes[0], lastParameter, culture) };
+            }
         }
     }
 }

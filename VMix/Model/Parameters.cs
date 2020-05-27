@@ -33,7 +33,7 @@ namespace VMix
 
         public abstract object Clone();
 
-        public abstract void CopyValueFrom(Parameter p);
+        public abstract void CopyValueFrom(Parameter p, bool copyMinMax = true);
 
         public bool Equals(Parameter other)
         {
@@ -124,12 +124,15 @@ namespace VMix
             return new DoubleParameter(this);
         }
 
-        public override void CopyValueFrom(Parameter p)
+        public override void CopyValueFrom(Parameter p, bool copyMinMax = true)
         {
             DoubleParameter src = (DoubleParameter)p;
             this.value = src.value;
-            this.max = src.max;
-            this.min = src.min;
+            if (copyMinMax)
+            {
+                this.max = src.max;
+                this.min = src.min;
+            }
             this.Enabled = src.Enabled;
             this.MultipleValues = src.MultipleValues;
         }
@@ -197,7 +200,7 @@ namespace VMix
             return new ContinuousDoubleParameter(this);
         }
 
-        public override void CopyValueFrom(Parameter p)
+        public override void CopyValueFrom(Parameter p, bool copyMinMax = true)
         {
             ContinuousDoubleParameter src = (ContinuousDoubleParameter)p;
             this.value = src.value;
@@ -289,12 +292,15 @@ namespace VMix
             return new IntParameter(this);
         }
 
-        public override void CopyValueFrom(Parameter p)
+        public override void CopyValueFrom(Parameter p, bool copyMinMax = true)
         {
             IntParameter src = (IntParameter)p;
             this.value = src.value;
-            this.max = src.max;
-            this.min = src.min;
+            if (copyMinMax)
+            {
+                this.max = src.max;
+                this.min = src.min;
+            }
             this.Enabled = src.Enabled;
             this.MultipleValues = src.MultipleValues;
         }
@@ -346,7 +352,7 @@ namespace VMix
             return new BoolParameter(this);
         }
 
-        public override void CopyValueFrom(Parameter p)
+        public override void CopyValueFrom(Parameter p, bool copyMinMax = true)
         {
             BoolParameter src = (BoolParameter)p;
             this.value = src.value;
@@ -401,7 +407,7 @@ namespace VMix
             return new StringParameter(this);
         }
 
-        public override void CopyValueFrom(Parameter p)
+        public override void CopyValueFrom(Parameter p, bool copyMinMax = true)
         {
             StringParameter src = (StringParameter)p;
             this.value = src.value;
@@ -456,7 +462,7 @@ namespace VMix
             return new ColorParameter(this);
         }
 
-        public override void CopyValueFrom(Parameter p)
+        public override void CopyValueFrom(Parameter p, bool copyMinMax = true)
         {
             ColorParameter src = (ColorParameter)p;
             this.value = src.value;
@@ -507,7 +513,7 @@ namespace VMix
             return new EnumParameter<T>(this);
         }
 
-        public override void CopyValueFrom(Parameter p)
+        public override void CopyValueFrom(Parameter p, bool copyMinMax = true)
         {
             EnumParameter<T> src = (EnumParameter<T>)p;
             this.value = src.value;

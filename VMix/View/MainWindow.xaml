@@ -14,7 +14,6 @@
         <vm:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
         <vm:IndexConverter x:Key="IndexConverter"/>
         <vm:BoolArrayIndexConverter x:Key="BoolArrayIndexConverter"/>
-        <vm:EQBandTypeConverter x:Key="EQBandTypeConverter"/>
         <vm:DebugConverter x:Key="DebugConverter"/>
     </Window.Resources>
     <Grid Margin="0,0,0,-3">
@@ -50,12 +49,13 @@
             <Rectangle Fill="{DynamicResource SelectedChannelPanel}" Grid.Row="1" StrokeThickness="0.7"/>
             <Grid Margin="0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="4*"/>
                     <ColumnDefinition Width="4*"/>
                 </Grid.ColumnDefinitions>
-                <Border BorderBrush="{DynamicResource Heading1Panel}" BorderThickness="1" HorizontalAlignment="Right" Margin="0"/>
+                <Border x:Name="ROUTING" BorderBrush="{DynamicResource Heading1Panel}" BorderThickness="1" HorizontalAlignment="Right" Margin="0,0,-1,0"/>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
@@ -76,7 +76,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Grid>
-                <Border BorderBrush="{DynamicResource Heading1Panel}" BorderThickness="1" HorizontalAlignment="Right" Margin="0" Grid.Column="1"/>
+                <Border x:Name="AUX_SENDS" BorderBrush="{DynamicResource Heading1Panel}" BorderThickness="1" HorizontalAlignment="Right" Margin="0,0,-1,0" Grid.Column="1"/>
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
@@ -87,22 +87,101 @@
                     <ItemsControl Grid.Row="1" ItemsSource="{Binding SelectedChannel.SendLevels}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid Columns="1" />
+                                <UniformGrid Columns="2" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0,0,2,0">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
-                                    <local:KnobControl LabelFontSize="12" Unit="dB" MetricTruncation="True" Value="{Binding Level.Value, Mode=TwoWay}" Minimum="{Binding Level.Min}" Maximum="{Binding Level.Max}" DecimalPlaces="1" Title="{Binding TargetIndex.Value, Converter={StaticResource IndexToNumberConverter}}"/>
-                                    <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="{Binding On.MultipleValues}" IsChecked="{Binding On.Value}" Content="On" Grid.Column="1"/>
+                                    <local:KnobControl LabelFontSize="12" Unit="dB" MetricTruncation="True" Value="{Binding Level.Value, Mode=TwoWay}" MultipleData="{Binding Level.MultipleValues}" Minimum="{Binding Level.Min}" Maximum="{Binding Level.Max}" DecimalPlaces="1" Title="{Binding TargetIndex.Value, Converter={StaticResource IndexToNumberConverter}}" Step="0.1" Exponential="True"/>
+                                    <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="{Binding On.MultipleValues}" IsChecked="{Binding On.Value}" Content="On" Grid.Column="1" VerticalAlignment="Bottom"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                </Grid>
+                <Border x:Name="INSERT_FX" BorderBrush="{DynamicResource Heading1Panel}" BorderThickness="1" HorizontalAlignment="Right" Grid.Column="2" Margin="0,0,-1,0"/>
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <!--<RowDefinition Height="2*"/>-->
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="10*"/>
+                        <RowDefinition Height="10*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="INSERT FX" VerticalAlignment="Top" Style="{DynamicResource Heading2}"/>
+                    <ListBox Grid.Row="1" Background="{DynamicResource ControlFill}" BorderBrush="{DynamicResource ControlBorder}" Foreground="{DynamicResource Text}" Margin="2,2,2,2"/>
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" Margin="2,2,2,2" Content="Add" />
+                        <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" Margin="2,2,2,2" Content="Remove" Grid.Column="1" />
+                        <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" Margin="2,2,2,2" Content="Edit" Grid.ColumnSpan="2" Grid.Row="1" />
+                    </Grid>
+                </Grid>
+                <Border x:Name="EQ" BorderBrush="{DynamicResource Heading1Panel}" BorderThickness="1" HorizontalAlignment="Right" Grid.Column="3" Margin="0,0,-1,0"/>
+                <Grid Grid.Column="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="10*"/>
+                        <!--<RowDefinition Height="2*"/>-->
+                    </Grid.RowDefinitions>
+                    <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="EQ" VerticalAlignment="Top" Style="{DynamicResource Heading2}"/>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="4*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <!--<local:EQCurveEditor/>-->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <local:KnobControl LabelFontSize="12" Unit="" MetricTruncation="True" Value="{Binding EQQ.Value, Mode=TwoWay, UpdateSourceTrigger=Default}" MultipleData="{Binding EQQ.MultipleValues}" Minimum="{Binding EQQ.Min}" Maximum="{Binding EQQ.Max}" DecimalPlaces="1" Title="Q" Step="0.1" Exponential="True"/>
+                            <local:KnobControl LabelFontSize="12" Unit="Hz" MetricTruncation="True" Value="{Binding EQF.Value, Mode=TwoWay, UpdateSourceTrigger=Default}" MultipleData="{Binding EQF.MultipleValues}" Minimum="{Binding EQF.Min}" Maximum="{Binding EQF.Max}" Title="Freq" Step="1" Exponential="True" Grid.Column="1"/>
+                            <local:KnobControl LabelFontSize="12" Unit="dB" MetricTruncation="True" Value="{Binding EQG.Value, Mode=TwoWay, UpdateSourceTrigger=Default}" MultipleData="{Binding EQG.MultipleValues}" Minimum="{Binding EQG.Min}" Maximum="{Binding EQG.Max}" DecimalPlaces="1" Title="Gain" Step="0.1" Exponential="True" Grid.Column="2"/>
+                        </Grid>
+                        <UniformGrid Columns="3" Grid.Row="2" Margin="2,2,2,2">
+                            <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="{Binding On.MultipleValues}" IsChecked="{Binding EQBandType, Converter={StaticResource IndexConverter}, ConverterParameter=0, Mode=TwoWay, UpdateSourceTrigger=Default}" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="{Binding EQEnabledBands, Converter={StaticResource BoolArrayIndexConverter}, ConverterParameter=0}">
+                                <local:MultieditToggleButton.Content>
+                                    <Image Source="/Themes/EQHPF.png" Stretch="Uniform"/>
+                                </local:MultieditToggleButton.Content>
+                            </local:MultieditToggleButton>
+                            <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="{Binding On.MultipleValues}" IsChecked="{Binding EQBandType, Converter={StaticResource IndexConverter}, ConverterParameter=1, Mode=TwoWay, UpdateSourceTrigger=Default}" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="{Binding EQEnabledBands, Converter={StaticResource BoolArrayIndexConverter}, ConverterParameter=1}">
+                                <local:MultieditToggleButton.Content>
+                                    <Image Source="/Themes/EQBell.png" Stretch="Uniform" StretchDirection="Both"/>
+                                </local:MultieditToggleButton.Content>
+                            </local:MultieditToggleButton>
+                            <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="{Binding On.MultipleValues}" IsChecked="{Binding EQBandType, Converter={StaticResource IndexConverter}, ConverterParameter=2, Mode=TwoWay, UpdateSourceTrigger=Default}" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="{Binding EQEnabledBands, Converter={StaticResource BoolArrayIndexConverter}, ConverterParameter=2}">
+                                <local:MultieditToggleButton.Content>
+                                    <Image Source="/Themes/EQLShelf.png" Stretch="Uniform"/>
+                                </local:MultieditToggleButton.Content>
+                            </local:MultieditToggleButton>
+                        </UniformGrid>
+                        <UniformGrid Columns="4" Grid.Row="3" Margin="2,2,2,2">
+                            <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="{Binding On.MultipleValues}" IsChecked="{Binding EQSelectedBand, Converter={StaticResource IndexConverter}, ConverterParameter=0}" Content="LOW" Grid.Column="1" VerticalAlignment="Stretch" Command="{Binding EQBandSelectCommand, Mode=OneWay}" CommandParameter="0"/>
+                            <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="{Binding On.MultipleValues}" IsChecked="{Binding EQSelectedBand, Converter={StaticResource IndexConverter}, ConverterParameter=1}" Content="L-MID" Grid.Column="1" VerticalAlignment="Stretch" Command="{Binding EQBandSelectCommand, Mode=OneWay}" CommandParameter="1"/>
+                            <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="{Binding On.MultipleValues}" IsChecked="{Binding EQSelectedBand, Converter={StaticResource IndexConverter}, ConverterParameter=2}" Content="H-MID" Grid.Column="1" VerticalAlignment="Stretch" Command="{Binding EQBandSelectCommand, Mode=OneWay}" CommandParameter="2"/>
+                            <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="{Binding On.MultipleValues}" IsChecked="{Binding EQSelectedBand, Converter={StaticResource IndexConverter}, ConverterParameter=3}" Content="HIGH" Grid.Column="1" VerticalAlignment="Stretch" Command="{Binding EQBandSelectCommand, Mode=OneWay}" CommandParameter="3"/>
+                        </UniformGrid>
+                        <local:MultieditToggleButton Style="{DynamicResource StandardToggleButton}" Template="{DynamicResource MultieditToggleButtonControlTemplate1}" MultipleData="False" IsChecked="True" Content=" On " VerticalAlignment="Bottom" Grid.Row="4" HorizontalAlignment="Right" Margin="2,2,2,2"/>
+                    </Grid>
                 </Grid>
             </Grid>
 

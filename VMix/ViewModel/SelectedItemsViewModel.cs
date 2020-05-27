@@ -118,7 +118,7 @@ namespace VMix.ViewModel
             //Find all the properties which have bindable properties
             foreach (PropertyInfo p in o.GetType().GetProperties())
             {
-                if (parentAddr == string.Empty && p.DeclaringType != typeof(MixChannel))
+                if (string.IsNullOrEmpty(parentAddr) && p.DeclaringType != typeof(MixChannel))
                     continue;
 
                 if (typeof(INotifyPropertyChanged).IsAssignableFrom(p.PropertyType))
@@ -536,13 +536,14 @@ namespace VMix.ViewModel
                 //Selection with different values
                 Parameter targetParam = (Parameter)Activator.CreateInstance(localParametersFlattened[addr].GetType());
                 targetParam.MultipleValues = true;
-                localParametersFlattened[addr].CopyValueFrom(targetParam);
+                localParametersFlattened[addr].CopyValueFrom(targetParam, false);
             }
 
             //In case the value of a property in our selected items changes, 
             //notify our local version of the property that it has changed so that the binding can update
             OnPropertyChanged(e.PropertyName);
-            localParametersFlattened[addr].OnPropertyChanged("Value");
+            foreach(PropertyInfo p in localParametersFlattened[addr].GetType().GetProperties())
+                localParametersFlattened[addr].OnPropertyChanged(p.Name);
         }
         #endregion
     }

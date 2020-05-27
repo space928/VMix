@@ -16,6 +16,13 @@ namespace VMix.ViewModel
         private ObservableCollection<Channel> _Faders9To16 = new ObservableCollection<Channel>();
         private SelectedItemsViewModel _SelectedChannel;
 
+        private DoubleParameter _EQQ = new DoubleParameter(0,0.1,10);
+        private DoubleParameter _EQG = new DoubleParameter(0,-18,18);
+        private DoubleParameter _EQF = new DoubleParameter(125,20,20000);
+        private int _EQBandType;
+        private int _EQSelectedBand;
+        private bool[] _EQEnabledBands = new bool[] { true, true, true };
+
         private SettingsWindow settingsWindow;
 
         private ObservableCollection<Channel> allChannels = new ObservableCollection<Channel>();
@@ -87,6 +94,36 @@ namespace VMix.ViewModel
             get { return _SelectedChannel; }
             set { SetProperty(ref _SelectedChannel, value); }
         }
+        public DoubleParameter EQQ
+        {
+            get { return _EQQ; }
+            set { SetProperty(ref _EQQ, value); }
+        }
+        public DoubleParameter EQG
+        {
+            get { return _EQG; }
+            set { SetProperty(ref _EQG, value); }
+        }
+        public DoubleParameter EQF
+        {
+            get { return _EQF; }
+            set { SetProperty(ref _EQF, value); }
+        }
+        public int EQBandType
+        {
+            get { return _EQBandType; }
+            set { SetProperty(ref _EQBandType, value); }
+        }
+        public int EQSelectedBand
+        {
+            get { return _EQSelectedBand; }
+            set { SetProperty(ref _EQSelectedBand, value); }
+        }
+        public bool[] EQEnabledBands
+        {
+            get { return _EQEnabledBands; }
+            set { SetProperty(ref _EQEnabledBands, value); }
+        }
 
         public Settings UserSettings
         {
@@ -150,7 +187,14 @@ namespace VMix.ViewModel
             }
         }
 
-
+        private ICommand eQBandSelectCommand;
+        public ICommand EQBandSelectCommand
+        {
+            get
+            {
+                return eQBandSelectCommand ?? (eQBandSelectCommand = new MixerCommand((object param) => UpdateEQBindings((string)param), () => true));
+            }
+        }
 
         private ICommand darkModeToggleCommand;
         public ICommand DarkModeToggleCommand
@@ -403,6 +447,32 @@ namespace VMix.ViewModel
                 if (c.GetType() == typeof(MixChannel))
                     if (c.Selected)
                         SelectedChannel.SelectedChannels.Add(c as MixChannel);
+            }
+        }
+
+        private void UpdateEQBindings(string bandIndex)
+        {
+            if (!int.TryParse(bandIndex, out int ind))
+                return;
+            EQSelectedBand = ind;
+            if(SelectedChannel.Eq.EqBands.Count> ind)
+            {
+                //Generalisation
+                if(ind == 0 || ind + 1==SelectedChannel.Eq.EqBands.Count)
+                {
+                    EQEnabledBands = new bool[] { true, true, true };
+                } else
+                {
+                    EQEnabledBands = new bool[] { false, true, false };
+                    EQBandType = (int)EQ.BandType.Peak;
+                }
+                EQQ = SelectedChannel.Eq.EqBands[ind].Q;
+                EQF = SelectedChannel.Eq.EqBands[ind].Freq;
+                EQG = SelectedChannel.Eq.EqBands[ind].Gain;
+            }
+            else
+            {
+                Console.WriteLine("Not enough EQ bands available!");
             }
         }
         #endregion

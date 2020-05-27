@@ -181,11 +181,13 @@ namespace VMix
     {
         public string FXName { get; set; }
         public FXParameter[] FXParameters { get; set; }
+        public bool AvailableAsInsert { get; set; }
 
         public FXModule()
         {
             FXName = "DefaultFX";
             FXParameters = new FXParameter[1] { new FXParameter() };
+            AvailableAsInsert = false;
         }
     }
 

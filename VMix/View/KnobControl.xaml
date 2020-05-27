@@ -9,6 +9,7 @@
              d:DesignHeight="50" d:DesignWidth="50">
     <UserControl.Resources>
         <ViewModel:KnobValueToAngleConverter x:Key="KnobValueToAngleConverter"/>
+        <ViewModel:MultiObjectPackerConverter x:Key="MultiObjectPackerConverter"/>
         <ViewModel:KnobTitleConverter x:Key="KnobTitleConverter"/>
     </UserControl.Resources>
     <Grid>
@@ -29,13 +30,47 @@
         </TextBlock>
         <Viewbox Stretch="Uniform" Grid.RowSpan="1">
             <Grid x:Name="knobGrid">
-                <Ellipse Fill="{DynamicResource ControlFill}" HorizontalAlignment="Center" Height="200" Stroke="{DynamicResource ControlBorder}" VerticalAlignment="Top" Width="200" Grid.RowSpan="2" MouseWheel="Ellipse_MouseWheel" MouseDown="Ellipse_MouseDown" MouseMove="Ellipse_MouseMove" MouseUp="Ellipse_MouseUp" MouseRightButtonDown="Ellipse_MouseRightButtonDown" />
+                <Ellipse HorizontalAlignment="Center" Height="200" Stroke="{DynamicResource ControlBorder}" VerticalAlignment="Top" Width="200" Grid.RowSpan="2" MouseWheel="Ellipse_MouseWheel" MouseDown="Ellipse_MouseDown" MouseMove="Ellipse_MouseMove" MouseUp="Ellipse_MouseUp" MouseRightButtonDown="Ellipse_MouseRightButtonDown">
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="{DynamicResource ControlFill}"/>
+                            <Style.Triggers>
+                                <DataTrigger Value="True" Binding="{Binding MultipleData, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}}">
+                                    <Setter Property="Fill" Value="{DynamicResource ControlFillMixedValues}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
                 <Rectangle x:Name="displayKnobNotch" Fill="{DynamicResource ControlAccent}" Height="94" Margin="0,6,0,100" Stroke="{DynamicResource ControlBorder}" Width="12" RenderTransformOrigin="0.5,1" HorizontalAlignment="Center" StrokeThickness="0" VerticalAlignment="Top">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Value="False" Binding="{Binding IsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}}">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
                     <Rectangle.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform/>
                             <SkewTransform/>
-                            <RotateTransform Angle="{Binding Value, Converter={StaticResource KnobValueToAngleConverter}, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}}"/>
+                            <RotateTransform>
+                                <RotateTransform.Angle>
+                                    <ViewModel:ConverterBindableParameter Binding="{Binding Value, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}}"
+                                        Converter="{StaticResource KnobValueToAngleConverter}">
+                                        <ViewModel:ConverterBindableParameter.ConverterParameter>
+                                            <MultiBinding Converter="{StaticResource MultiObjectPackerConverter}">
+                                                <Binding Path="Minimum" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}"/>
+                                                <Binding Path="Maximum" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}"/>
+                                                <Binding Path="Exponential" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:KnobControl}}"/>
+                                            </MultiBinding>
+                                        </ViewModel:ConverterBindableParameter.ConverterParameter>
+                                    </ViewModel:ConverterBindableParameter>
+                                </RotateTransform.Angle>
+                            </RotateTransform>
                             <TranslateTransform/>
                         </TransformGroup>
                     </Rectangle.RenderTransform>

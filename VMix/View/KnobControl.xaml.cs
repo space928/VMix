@@ -41,7 +41,7 @@ namespace VMix
         #region Private Fields
         private bool isMouseDown = false;
         private Point previousMousePosition;
-        private double mouseMoveThreshold = 20;
+        private double mouseMoveThreshold = 3;
         private bool init = true;
         private MouseButtonEventHandler valueTypeInCloseHandler;
         #endregion Private Fields
@@ -56,6 +56,7 @@ namespace VMix
         public static readonly DependencyProperty DecimalPlacesProperty = DependencyProperty.Register("DecimalPlaces", typeof(int), typeof(KnobControl));
         public static readonly DependencyProperty MetricTruncationProperty = DependencyProperty.Register("MetricTruncation", typeof(bool), typeof(KnobControl));
         public static readonly DependencyProperty ExponentialProperty = DependencyProperty.Register("Exponential", typeof(bool), typeof(KnobControl));
+        public static readonly DependencyProperty MultipleDataProperty = DependencyProperty.Register("MultipleData", typeof(bool), typeof(KnobControl));
 
         private static readonly RoutedEvent KnobValueChangedEvent = EventManager.RegisterRoutedEvent("KnobValueChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(KnobControl));
 
@@ -126,6 +127,18 @@ namespace VMix
             get { return (bool)GetValue(MetricTruncationProperty); }
             set { SetValue(MetricTruncationProperty, value); }
         }
+        [Description("Gets or sets whether or not the knob has an exponential response."), Category("Knob Control")]
+        public bool Exponential
+        {
+            get { return (bool)GetValue(ExponentialProperty); }
+            set { SetValue(ExponentialProperty, value); }
+        }
+        [Description("Gets or sets whether or not the knob represents multiple values."), Category("Knob Control")]
+        public bool MultipleData
+        {
+            get { return (bool)GetValue(MultipleDataProperty); }
+            set { SetValue(MultipleDataProperty, value); }
+        }
 
         private static object CoerceKnobValue(DependencyObject d, object baseValue)
         {
@@ -146,8 +159,14 @@ namespace VMix
         private void Ellipse_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             double d = e.Delta / 120; // Mouse wheel 1 click (120 delta) = 1 step
-            //Value += d * Step;
-            SetCurrentValue(ValueProperty, Value + d * Step);
+            d *= 2; //Just make it a bit more sensitive
+            double nVal = Value;
+            if (Exponential)
+                nVal = LinExpConvert.Convert(nVal, Minimum, Maximum);
+            nVal += Math.Sign(d) * Step * SettingsManager.Settings.KnobSensistivity;
+            if (Exponential)
+                nVal = LinExpConvert.ConvertBack(Math.Clamp(nVal, Minimum, Maximum), Minimum, Maximum);
+            SetCurrentValue(ValueProperty, nVal);
         }
 
         private void Ellipse_MouseDown(object sender, MouseButtonEventArgs e)
@@ -184,7 +203,18 @@ namespace VMix
                 {
                     double aval = Math.Abs(Value);
                     //Value += Math.Sign(dY) * Step * SettingsManager.Settings.KnobSensistivity;
-                    SetCurrentValue(ValueProperty, Value + Math.Sign(dY) * Step * SettingsManager.Settings.KnobSensistivity);
+                    //Conver to linear space before adding the change to create the exponential response
+                    double nVal = Value;
+                    if (Exponential)
+                        nVal = LinExpConvert.Convert(nVal, Minimum, Maximum);
+                    nVal += Math.Sign(dY) * Step * SettingsManager.Settings.KnobSensistivity;
+                    if(Exponential)
+                        nVal = LinExpConvert.ConvertBack(Math.Clamp(nVal, Minimum, Maximum), Minimum, Maximum);
+
+                    if (double.IsNaN(nVal))
+                        nVal = 0;
+
+                    SetCurrentValue(ValueProperty, nVal);
                     previousMousePosition = newMousePosition;
                 }
             }
@@ -220,10 +250,12 @@ namespace VMix
                     return;
             }
             double tmpVal;
-            double.TryParse(valueEntry.Text, out tmpVal);
-            tmpVal = Math.Max(Math.Min(tmpVal, Maximum), Minimum);
-            Value = tmpVal;
-            SetCurrentValue(ValueProperty, tmpVal);
+            if (double.TryParse(valueEntry.Text, out tmpVal))
+            {
+                tmpVal = Math.Max(Math.Min(tmpVal, Maximum), Minimum);
+                Value = tmpVal;
+                SetCurrentValue(ValueProperty, tmpVal);
+            }
             valueEntry.Visibility = Visibility.Hidden;
 
             ReleaseMouseCapture();

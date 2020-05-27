@@ -7,7 +7,7 @@ namespace VMix
 {
     public class MultieditToggleButton : ToggleButton
     {
-        public static readonly DependencyProperty MultipleDataProperty = DependencyProperty.Register("MultipleData", typeof(bool), typeof(MultieditToggleButton), new PropertyMetadata(new PropertyChangedCallback(OnMultipleDataChanged)));
+        public static readonly DependencyProperty MultipleDataProperty = DependencyProperty.Register("MultipleData", typeof(bool), typeof(MultieditToggleButton));
         public static readonly DependencyProperty DragToggleButtonProperty = DependencyProperty.Register("DragToggleButton", typeof(bool), typeof(MultieditToggleButton));
 
         public bool MultipleData
