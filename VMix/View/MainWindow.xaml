@@ -59,8 +59,8 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
-                        <RowDefinition Height="10*"/>
-                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="6*"/>
+                        <RowDefinition Height="6*"/>
                     </Grid.RowDefinitions>
                     <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="ROUTING" VerticalAlignment="Top" Style="{DynamicResource Heading2}"/>
                     <ItemsControl Grid.Row="1" ItemsSource="{Binding SelectedChannel.Routing}">
@@ -75,6 +75,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    <Border x:Name="CHANNEL_DCA_ASSIGNMENTS" Grid.Row="2" BorderBrush="{DynamicResource Heading1Panel}" VerticalAlignment="Top" Margin="0,-1,0,0" BorderThickness="1"/>
                 </Grid>
                 <Border x:Name="AUX_SENDS" BorderBrush="{DynamicResource Heading1Panel}" BorderThickness="1" HorizontalAlignment="Right" Margin="0,0,-1,0" Grid.Column="1"/>
                 <Grid Grid.Column="1">
@@ -146,15 +147,15 @@
                             <RowDefinition/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <!--<local:EQCurveEditor/>-->
+                        <local:EQCurveEditor EQObject="{Binding SelectedChannel.Eq, Mode=TwoWay, UpdateSourceTrigger=Default}" FreqMax="20000" FreqMin="20" GainRange="18"/>
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <local:KnobControl LabelFontSize="12" Unit="" MetricTruncation="True" Value="{Binding EQQ.Value, Mode=TwoWay, UpdateSourceTrigger=Default}" MultipleData="{Binding EQQ.MultipleValues}" Minimum="{Binding EQQ.Min}" Maximum="{Binding EQQ.Max}" DecimalPlaces="1" Title="Q" Step="0.1" Exponential="True"/>
-                            <local:KnobControl LabelFontSize="12" Unit="Hz" MetricTruncation="True" Value="{Binding EQF.Value, Mode=TwoWay, UpdateSourceTrigger=Default}" MultipleData="{Binding EQF.MultipleValues}" Minimum="{Binding EQF.Min}" Maximum="{Binding EQF.Max}" Title="Freq" Step="1" Exponential="True" Grid.Column="1"/>
+                            <local:KnobControl LabelFontSize="12" Unit="" MetricTruncation="True" Value="{Binding EQQ.Value, Mode=TwoWay, UpdateSourceTrigger=Default}" MultipleData="{Binding EQQ.MultipleValues}" Minimum="{Binding EQQ.Min}" Maximum="{Binding EQQ.Max}" DecimalPlaces="1" Title="Q" Step="0.04" Exponential="True"/>
+                            <local:KnobControl LabelFontSize="12" Unit="Hz" MetricTruncation="True" Value="{Binding EQF.Value, Mode=TwoWay, UpdateSourceTrigger=Default}" MultipleData="{Binding EQF.MultipleValues}" Minimum="{Binding EQF.Min}" Maximum="{Binding EQF.Max}" Title="Freq" Step="15" Exponential="True" Grid.Column="1"/>
                             <local:KnobControl LabelFontSize="12" Unit="dB" MetricTruncation="True" Value="{Binding EQG.Value, Mode=TwoWay, UpdateSourceTrigger=Default}" MultipleData="{Binding EQG.MultipleValues}" Minimum="{Binding EQG.Min}" Maximum="{Binding EQG.Max}" DecimalPlaces="1" Title="Gain" Step="0.1" Exponential="True" Grid.Column="2"/>
                         </Grid>
                         <UniformGrid Columns="3" Grid.Row="2" Margin="2,2,2,2">
@@ -185,20 +186,20 @@
                 </Grid>
             </Grid>
 
-            <Rectangle Fill="{DynamicResource Heading1Panel}" StrokeThickness="0.7" Grid.Column="4" Margin="0"/>
-            <TextBlock TextWrapping="Wrap" Text="SCENE MANAGER" Style="{DynamicResource Heading1}" Margin="5,1,0,1" VerticalAlignment="Center" Grid.Column="4"/>
-            <Rectangle Grid.Column="4" Fill="{DynamicResource SceneManagerPanel}" Grid.Row="1" StrokeThickness="0.7"/>
-            <Grid Margin="0" Grid.Row="1" Grid.Column="2">
+            <Rectangle Fill="{DynamicResource Heading1Panel}" StrokeThickness="0.7" Grid.Column="2" Margin="0"/>
+            <TextBlock TextWrapping="Wrap" Text="CONSOLE" Style="{DynamicResource Heading1}" Margin="5,1,0,1" VerticalAlignment="Center" Grid.Column="2"/>
+            <Rectangle Grid.Column="2" Fill="{DynamicResource SceneManagerPanel}" Grid.Row="1" StrokeThickness="0.7"/>
+            <Grid Margin="0" Grid.Row="1" Grid.Column="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
             </Grid>
-
-            <Rectangle Fill="{DynamicResource Heading1Panel}" StrokeThickness="0.7" Grid.Column="2" Margin="0"/>
-            <TextBlock TextWrapping="Wrap" Text="CONSOLE" Style="{DynamicResource Heading1}" Margin="5,1,0,1" VerticalAlignment="Center" Grid.Column="2"/>
-            <Rectangle Grid.Column="2" Fill="{DynamicResource SceneManagerPanel}" Grid.Row="1" StrokeThickness="0.7"/>
-            <Grid Margin="0" Grid.Row="1" Grid.Column="5">
+            
+            <Rectangle Fill="{DynamicResource Heading1Panel}" StrokeThickness="0.7" Grid.Column="4" Margin="0"/>
+            <TextBlock TextWrapping="Wrap" Text="SCENE MANAGER" Style="{DynamicResource Heading1}" Margin="5,1,0,1" VerticalAlignment="Center" Grid.Column="4"/>
+            <Rectangle Grid.Column="4" Fill="{DynamicResource SceneManagerPanel}" Grid.Row="1" StrokeThickness="0.7"/>
+            <Grid Margin="0" Grid.Row="1" Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>

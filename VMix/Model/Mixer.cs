@@ -561,22 +561,22 @@ namespace VMix
         }
     }
 
+    public enum EQBandType
+    {
+        Peak = 1,
+        Shelf = 2,
+        Cut = 0
+    };
+
     public class EQ : BindableBase
     {
-        public enum BandType
-        {
-            Peak = 1,
-            Shelf = 2,
-            Cut = 0
-        };
-
         //TODO: Flesh out EQ band
         public class Band : BindableBase
         {
             private DoubleParameter q = new DoubleParameter(0,0.1,10);
-            private DoubleParameter freq = new DoubleParameter(0,-18,18);
-            private DoubleParameter gain = new DoubleParameter(125, 20, 20000);
-            private EnumParameter<BandType> bandType = new EnumParameter<BandType>(EQ.BandType.Peak);
+            private DoubleParameter freq = new DoubleParameter(125, 20, 20000); 
+            private DoubleParameter gain = new DoubleParameter(0, -18, 18);
+            private EnumParameter<EQBandType> bandType = new EnumParameter<EQBandType>(EQBandType.Peak);
 
             public DoubleParameter Gain
             {
@@ -593,7 +593,7 @@ namespace VMix
                 get { return freq; }
                 set { SetProperty(ref freq, value); }
             }
-            public EnumParameter<BandType> BandType
+            public EnumParameter<EQBandType> BandType
             {
                 get { return bandType; }
                 set { SetProperty(ref bandType, value); }
@@ -609,7 +609,7 @@ namespace VMix
                 gain = new DoubleParameter(src.gain);
                 q = new DoubleParameter(src.q);
                 freq = new DoubleParameter(src.freq);
-                bandType = new EnumParameter<BandType>(src.bandType);
+                bandType = new EnumParameter<EQBandType>(src.bandType);
             }
         }
 

@@ -464,7 +464,7 @@ namespace VMix.ViewModel
                 } else
                 {
                     EQEnabledBands = new bool[] { false, true, false };
-                    EQBandType = (int)EQ.BandType.Peak;
+                    EQBandType = (int)VMix.EQBandType.Peak;
                 }
                 EQQ = SelectedChannel.Eq.EqBands[ind].Q;
                 EQF = SelectedChannel.Eq.EqBands[ind].Freq;
